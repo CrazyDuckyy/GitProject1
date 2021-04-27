@@ -46,12 +46,12 @@
           <span>{{ row.p_num }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="拼团时限(小时)" align="center" width="200">
+      <el-table-column label="拼团时限(小时)" align="center" width="100">
         <template slot-scope="{ row }">
           <span>{{ row.expire }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="拼团状态" align="center" width="200">
+      <el-table-column label="拼团状态" align="center" width="100">
         <template slot-scope="{ row }">
           <!-- 0 是已下架 1是未开始？？  -->
           <span>{{ row.status }}</span>
@@ -74,7 +74,7 @@
             type="danger"
             @click="handleDelete(row, $index)"
           >
-            删除
+            下架
           </el-button>
         </template>
       </el-table-column>
