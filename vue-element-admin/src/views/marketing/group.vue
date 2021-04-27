@@ -21,19 +21,40 @@
       highlight-current-row
       style="width: 100%"
     >
-      <el-table-column label="账号" align="left">
+      <el-table-column label="拼图案内容" align="left">
         <template slot-scope="{ row }">
-          <span>{{ row.account }}</span>
+          <div style="display: flex">
+            <div>
+              <img :src="row.value.cover" width="100px" height="50px" />
+            </div>
+            <div>
+              <p style="margin: 0; line-height: 20px">{{ row.value.title }}</p>
+              <p style="margin: 0; line-height: 20px">
+                原始价格：<span style="color: red">￥{{ row.price }}</span>
+              </p>
+              <p style="margin: 0; line-height: 20px">
+                拼团价格：<span style="color: red"
+                  >￥{{ row.value.price }}</span
+                >
+              </p>
+            </div>
+          </div>
         </template>
       </el-table-column>
-      <el-table-column label="开户人" align="center" width="100">
+      <el-table-column label="成团人数" align="center" width="100">
         <template slot-scope="{ row }">
-          <span>{{ row.name }}</span>
+          <span>{{ row.p_num }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="开户行" align="center" width="200">
+      <el-table-column label="拼团时限(小时)" align="center" width="200">
         <template slot-scope="{ row }">
-          <span>{{ row.path }}</span>
+          <span>{{ row.expire }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="拼团状态" align="center" width="200">
+        <template slot-scope="{ row }">
+          <!-- 0 是已下架 1是未开始？？  -->
+          <span>{{ row.status }}</span>
         </template>
       </el-table-column>
 
@@ -47,14 +68,6 @@
           <el-button type="primary" size="mini" @click="handleUpdate(row)">
             编辑
           </el-button>
-          <!-- <el-button
-            v-if="row.status != 'published'"
-            size="mini"
-            :type="row.status ? '' : 'success'"
-            @click="handleModifyStatus(row, 'published')"
-          >
-            {{ row.status ? "下架" : "上架" }}
-          </el-button> -->
           <el-button
             v-if="row.status != 'deleted'"
             size="mini"
@@ -75,7 +88,7 @@
       @pagination="getList"
     />
 
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+    <!-- <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form
         ref="dataForm"
         :rules="rules"
@@ -118,22 +131,17 @@
           确认
         </el-button>
       </div>
-    </el-dialog>
+    </el-dialog> -->
   </div>
 </template>
 
 <script>
-import {
-  fetchPayments,
-  createPayment,
-  deletePayment,
-  updatePayment,
-} from "@/api/pay";
+import { fetchGroup, createGroup, updateGroup } from "@/api/marketing";
 import waves from "@/directive/waves"; // waves directive
 import { parseTime } from "@/utils";
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
 import Tinymce from "@/components/Tinymce";
-import { getBank } from "@/utils/bank";
+// import { getBank } from "@/utils/bank";
 
 export default {
   name: "ComplexTable",
@@ -141,7 +149,7 @@ export default {
   directives: { waves },
   data() {
     return {
-      bank: [],
+      //   bank: [],
       tableKey: "",
       list: null,
       total: 0,
@@ -202,12 +210,12 @@ export default {
   },
   created() {
     this.getList();
-    this.banks = getBank();
+    // this.banks = getBank();
   },
   methods: {
     getList() {
       this.listLoading = true;
-      fetchPayments(this.listQuery).then((res) => {
+      fetchGroup(this.listQuery).then((res) => {
         console.log(res);
         if (res.code === 20000) {
           this.listLoading = false;
@@ -250,7 +258,7 @@ export default {
         if (valid) {
           this.temp.id = parseInt(Math.random() * 100) + 1024; // mock a id
           this.temp.author = "vue-element-admin";
-          createPayment(this.temp).then(() => {
+          createGroup(this.temp).then(() => {
             this.list.unshift(this.temp);
             this.dialogFormVisible = false;
             this.$notify({
@@ -277,7 +285,7 @@ export default {
         if (valid) {
           const tempData = Object.assign({}, this.temp);
           tempData.timestamp = +new Date(tempData.timestamp); // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
-          updatePayment(tempData).then(() => {
+          updateGroup(tempData).then(() => {
             const index = this.list.findIndex((v) => v.id === this.temp.id);
             this.list.splice(index, 1, this.temp);
             this.dialogFormVisible = false;
@@ -303,38 +311,6 @@ export default {
         this.list.splice(index, 1);
       });
     },
-
-    // handleDownload() {
-    //   this.downloadLoading = true;
-    //   import("@/vendor/Export2Excel").then((excel) => {
-    //     const tHeader = ["timestamp", "title", "type", "importance", "status"];
-    //     const filterVal = [
-    //       "timestamp",
-    //       "title",
-    //       "type",
-    //       "importance",
-    //       "status",
-    //     ];
-    //     const data = this.formatJson(filterVal);
-    //     excel.export_json_to_excel({
-    //       header: tHeader,
-    //       data,
-    //       filename: "table-list",
-    //     });
-    //     this.downloadLoading = false;
-    //   });
-    // },
-    // formatJson(filterVal) {
-    //   return this.list.map((v) =>
-    //     filterVal.map((j) => {
-    //       if (j === "timestamp") {
-    //         return parseTime(v[j]);
-    //       } else {
-    //         return v[j];
-    //       }
-    //     })
-    //   );
-    // },
   },
 };
 </script>

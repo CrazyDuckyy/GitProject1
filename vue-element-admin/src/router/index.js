@@ -210,7 +210,7 @@ export const asyncRoutes = [
     redirect: '/trade/trade',
     name: 'Trade',
     meta: {
-      title: '订单',
+      title: '交易',
       icon: 'education',
     },
     children: [
@@ -219,7 +219,7 @@ export const asyncRoutes = [
         component: () => import('@/views/trade/trade'),
         name: 'Trade',
         meta: {
-          title: '订单',
+          title: '订单管理',
           // roles: ['admin'] // or you can only set roles in sub nav
         },
       },
@@ -228,7 +228,7 @@ export const asyncRoutes = [
         component: () => import('@/views/trade/assets'),
         name: 'Assets',
         meta: {
-          title: '资产',
+          title: '资产管理',
           // roles: ['admin'] // or you can only set roles in sub nav
         }
       },
@@ -237,7 +237,46 @@ export const asyncRoutes = [
         component: () => import('@/views/trade/payment'),
         name: 'Payment',
         meta: {
-          title: '支付',
+          title: '支付设置',
+          // roles: ['admin'] // or you can only set roles in sub nav
+        }
+      },
+    ]
+  },
+  {
+    path: '/marketing',
+    component: Layout,
+    redirect: '/marketing/marketing',
+    name: 'Marketing',
+    meta: {
+      title: '营销',
+      icon: 'education',
+    },
+    children: [
+      {
+        path: 'group',
+        component: () => import('@/views/marketing/group'),
+        name: 'Group',
+        meta: {
+          title: '拼团',
+          // roles: ['admin'] // or you can only set roles in sub nav
+        },
+      },
+      {
+        path: 'seckill',
+        component: () => import('@/views/marketing/seckill'),
+        name: 'Seckill',
+        meta: {
+          title: '秒杀',
+          // roles: ['admin'] // or you can only set roles in sub nav
+        }
+      },
+      {
+        path: 'coupon',
+        component: () => import('@/views/marketing/coupon'),
+        name: 'Coupon',
+        meta: {
+          title: '优惠券',
           // roles: ['admin'] // or you can only set roles in sub nav
         }
       },
